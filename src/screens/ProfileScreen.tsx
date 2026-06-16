@@ -41,6 +41,14 @@ export default function ProfileScreen() {
         </section>
 
         <section className="space-y-2 mb-10 bg-white rounded-xl shadow-sm overflow-hidden border border-outline-variant/10">
+          <button onClick={() => navigate('adminDashboard')} className="w-full flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors group">
+             <div className="flex items-center gap-4">
+               <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+                  <Settings size={20} />
+               </div>
+               <span className="text-base text-on-surface font-semibold">Admin Dashboard</span>
+             </div>
+          </button>
           {[
             { icon: History, label: 'Historique des commandes' },
             { icon: MapPin, label: 'Adresses enregistrées' },
@@ -48,7 +56,7 @@ export default function ProfileScreen() {
             { icon: Settings, label: 'Paramètres' },
             { icon: HelpCircle, label: 'Aide & Support' }
           ].map((item, i) => (
-            <button key={i} className={`w-full flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors group ${i !== 0 ? 'border-t border-outline-variant/10' : ''}`}>
+            <button key={i} className={`w-full flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors group border-t border-outline-variant/10`}>
                <div className="flex items-center gap-4">
                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                     <item.icon size={20} />

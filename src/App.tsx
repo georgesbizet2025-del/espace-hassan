@@ -14,6 +14,9 @@ import ProfileScreen from './screens/ProfileScreen';
 import AddressSelectionScreen from './screens/AddressSelectionScreen';
 import OffersScreen from './screens/OffersScreen';
 import SaladsScreen from './screens/SaladsScreen';
+import AdminDashboardScreen from './screens/AdminDashboardScreen';
+import AdminOrdersScreen from './screens/AdminOrdersScreen';
+import AdminMenuScreen from './screens/AdminMenuScreen';
 
 function AppContent() {
   const { currentScreen } = useApp();
@@ -29,6 +32,9 @@ function AppContent() {
       {currentScreen === 'addressSelection' && <AddressSelectionScreen />}
       {currentScreen === 'offers' && <OffersScreen />}
       {currentScreen === 'salads' && <SaladsScreen />}
+      {currentScreen === 'adminDashboard' && <AdminDashboardScreen />}
+      {currentScreen === 'adminOrders' && <AdminOrdersScreen />}
+      {currentScreen === 'adminMenu' && <AdminMenuScreen />}
 
       {['home', 'menu', 'cart', 'profile', 'salads'].includes(currentScreen) && <BottomNav />}
     </div>

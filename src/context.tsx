@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
-type Screen = 'home' | 'productDetail' | 'cart' | 'menu' | 'orderTracking' | 'profile' | 'addressSelection' | 'offers' | 'salads';
+type Screen = 'home' | 'productDetail' | 'cart' | 'menu' | 'orderTracking' | 'profile' | 'addressSelection' | 'offers' | 'salads' | 'adminDashboard' | 'adminOrders' | 'adminMenu';
 
 interface AppContextType {
   currentScreen: Screen;
