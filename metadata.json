@@ -1,0 +1,6 @@
+{
+  "name": "Food Delivery App",
+  "description": "A clean and modern food delivery app focusing on salads and healthy meals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
