@@ -1,13 +1,39 @@
 import { ArrowLeft, Trash2, Plus, Minus, MapPin, CreditCard, ShoppingBag } from 'lucide-react';
 import { useApp } from '../context';
+import { db } from '../lib/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 export default function CartScreen() {
-  const { navigate } = useApp();
+  const { navigate, user, userData } = useApp();
 
   const cartItems = [
     { id: 1, name: 'Pizza Pollo BBQ', price: '75 DH', qty: 1, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDwOGloVcYcGptO_5D9iFCWAqxj4ZllhvEEuBiUvwlS4MusbdcGbMNDNcKRc0S24SxwRwisZa-l5MNtn-v67q6TaVcxw97OeiCZ-BUwfeP6c6zK5DcvWW2B39N0ngLYHYsMwkBZIqVpc1CIIGSFjAX4gAPF38VYBjHElTQJEshuUOqPkLBKXvzSe_JdraV8W5k4G1EJqtWAXi8wG4EGrN2dIM7nYfZGPxjnJhgXJYeUkOngFXVcgQjlYl0JCljpXfLL_rd5ZbP3HSE' },
     { id: 2, name: 'Jus d\'Orange', price: '36 DH', qty: 2, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC4RRKgHGXjBamFB0Wubr5UwWVNfPWvLeKfr3n7IVyFMMiOl39ElKo_J_C27r9GbBI2CW7iq1shYMRB5n_o3XE2CRzGEg8j6DIgvN9Og25Gtkf_aC7cZRg1kyCmEyL8ehfqET_zlCwhTJujClXnt6y5HThOWxYWrDQJP8lXQqUx6gVCWEDrdHJndWp2y6UaalCeEllThltYL0h5bM4RHHfcQYTCuXDqDmQfnh3vVyxOoWLPiAK3WiK90bvLLPYKwqcCrarTtbaa5R4' }
   ];
+
+  const handleCheckout = async () => {
+    if (!user) {
+      alert("Please login to place an order");
+      navigate('login');
+      return;
+    }
+    
+    try {
+      const orderData = {
+        userId: user.uid,
+        customerName: userData?.name || user.email || 'Customer',
+        items: cartItems.map(item => ({ name: item.name, quantity: item.qty, price: item.price })),
+        total: '111 DH',
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        address: 'Gauthier, Casablanca'
+      };
+      await addDoc(collection(db, 'orders'), orderData);
+      navigate('orderTracking');
+    } catch (e) {
+      console.error("Checkout failed", e);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background pb-32">
@@ -79,7 +105,7 @@ export default function CartScreen() {
       </main>
 
       <div className="fixed bottom-20 w-full max-w-md left-1/2 -translate-x-1/2 z-50 p-4 bg-gradient-to-t from-background to-transparent pb-6">
-        <button onClick={() => navigate('orderTracking')} className="w-full bg-primary text-white py-4 rounded-2xl flex items-center justify-center gap-3 shadow-xl active:scale-[0.98] transition-all">
+        <button onClick={handleCheckout} className="w-full bg-primary text-white py-4 rounded-2xl flex items-center justify-center gap-3 shadow-xl active:scale-[0.98] transition-all">
           <span className="text-base font-bold">Passer la commande</span>
           <ShoppingBag size={20} />
         </button>

@@ -17,6 +17,7 @@ import SaladsScreen from './screens/SaladsScreen';
 import AdminDashboardScreen from './screens/AdminDashboardScreen';
 import AdminOrdersScreen from './screens/AdminOrdersScreen';
 import AdminMenuScreen from './screens/AdminMenuScreen';
+import LoginScreen from './screens/LoginScreen';
 
 function AppContent() {
   const { currentScreen } = useApp();
@@ -35,6 +36,7 @@ function AppContent() {
       {currentScreen === 'adminDashboard' && <AdminDashboardScreen />}
       {currentScreen === 'adminOrders' && <AdminOrdersScreen />}
       {currentScreen === 'adminMenu' && <AdminMenuScreen />}
+      {currentScreen === 'login' && <LoginScreen />}
 
       {['home', 'menu', 'cart', 'profile', 'salads'].includes(currentScreen) && <BottomNav />}
     </div>

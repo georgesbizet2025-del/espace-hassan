@@ -1,8 +1,32 @@
 import { ArrowLeft, Search, Plus } from 'lucide-react';
 import { useApp } from '../context';
+import { useState, useEffect } from 'react';
+import { db } from '../lib/firebase';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+
+interface Product {
+  id: string;
+  name: string;
+  price: string;
+  desc: string;
+  img: string;
+  category: string;
+}
 
 export default function MenuScreen() {
   const { navigate } = useApp();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const q = query(collection(db, 'products'), where('category', '==', 'Pizza'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setProducts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product)));
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const filteredPizzas = products.filter(pizza => pizza.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div className="min-h-screen bg-surface pb-24">
@@ -18,33 +42,38 @@ export default function MenuScreen() {
       <main className="px-4 mt-6 max-w-lg mx-auto">
         <div className="mt-4 flex items-center bg-surface-container-low rounded-xl px-4 py-3 border border-outline-variant/30">
           <Search size={20} className="text-outline" />
-          <input type="text" className="bg-transparent border-none focus:ring-0 w-full text-sm ml-2 outline-none" placeholder="Rechercher une pizza..." />
+          <input 
+            type="text" 
+            className="bg-transparent border-none focus:ring-0 w-full text-sm ml-2 outline-none" 
+            placeholder="Rechercher une pizza..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
 
         <div className="mt-8 space-y-4">
-          {[
-            { name: 'Pizza César', price: '69DH', desc: 'Poulet, Parmesan, Laitue, Sauce César, Mozzarella.', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCZsrc4oj6DNkR17aDlxkhW3RqwYlptDAW2i53ZFr4kU4bds6CMvOhJe_hdXYjG1QFW2jNru8YguStGXfsWzkQTd-lEjqJEYV9VCdLRKAEmmaP4b2Ig5Vku1z3CXwtvIDJ_7CA93_QJar_vKAJayauISa2Bokf5uKd9gkHFT_jyt02FGLe1hBh16ZC-jiwBIi9l517J4QUU9TED02KX4n2o2TauBYQiWgp4S3kYeaeNi_m1w4CsiJAbKgLgj9JQEx1YiIBaqlCCZQc' },
-            { name: 'Pizza Florentine', price: '69DH', desc: 'Epinards, Ricotta, Œuf, Crème, Mozzarella.', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAlJlJgLjzo8E2mfHFniuPriZyd1BDLVgZDkfxtfRKM9zw00mvH0Qxx7lRj0yZh8dIuvYW9x2W30_bWdhVDMZoURcrofAESDp9VkMO3LlavrL6Ry9t_4AD5RbPEHCts4upofqmd2B1DPzfQt43295QEUaosWlEcRCX5TFJmF6qlvXhZYpch7bfYy9oP5PWhC3aU3s0ajIk9sEA6M2ANP_4v51pHoStHouJxU4r_xMNWyLjT1c5oqiyBVB2lwH6-_eSWPYAiDZFxxMc' },
-            { name: 'Pizza Pollo BBQ', price: '75DH', desc: 'Poulet, Oignons Rouges, Maïs, Sauce BBQ, Mozzarella.', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGar1qtfN_Cvt83ccx5La9UqvxTC4v2JqhWRfr9Ki0cnz3kcff1M2l5B_ZQLPGwiK9PVqInrP4HfnBM-azVhX319zxbAirgQBQkKty69FVAoNN0ZRZpbSiKOeK9F5Du6adVT2B3dhXEcJSror4_lHHXyvrM8ZNloMy1gZj1xFf4blTQkrXQ-0Ig9AUtOerbn4YrITiOikeNdc6Wnw0Yw240-HNa2eFaUxKGVcfqj_xbDihDm8zMXvT1wmRb0jnprZNbFXvvrma9UA' }
-          ].map(pizza => (
-            <div key={pizza.name} onClick={() => navigate('productDetail')} className="flex items-center gap-4 bg-white p-3 rounded-2xl shadow-sm border border-outline-variant/20 active:scale-[0.98] transition-transform cursor-pointer">
+          {filteredPizzas.map(pizza => (
+            <div key={pizza.id} onClick={() => navigate('productDetail')} className="flex items-center gap-4 bg-white p-3 rounded-2xl shadow-sm border border-outline-variant/20 active:scale-[0.98] transition-transform cursor-pointer">
                <div className="w-24 h-24 flex-shrink-0">
-                 <img src={pizza.img} className="w-full h-full object-cover rounded-xl" />
+                 <img src={pizza.img || 'https://images.unsplash.com/photo-1604068549290-dea0e4a30536?q=80&w=200&auto=format&fit=crop'} className="w-full h-full object-cover rounded-xl bg-surface-container" />
                </div>
                <div className="flex-grow">
                  <div className="flex justify-between items-start">
                    <h3 className="font-bold text-lg text-primary">{pizza.name}</h3>
                    <span className="font-bold text-lg text-secondary">{pizza.price}</span>
                  </div>
-                 <p className="text-sm text-on-surface-variant leading-tight mt-1">{pizza.desc}</p>
+                 <p className="text-sm text-on-surface-variant leading-tight mt-1 line-clamp-2">{pizza.desc}</p>
                  <div className="mt-2 flex justify-end">
-                   <button className="bg-primary text-white p-2 rounded-lg flex items-center justify-center">
+                   <button className="bg-primary text-white p-2 rounded-lg flex items-center justify-center shadow-sm">
                      <Plus size={16} />
                    </button>
                  </div>
                </div>
             </div>
           ))}
+          {filteredPizzas.length === 0 && (
+             <div className="text-center py-10 text-on-surface-variant">Aucune pizza trouvée.</div>
+          )}
         </div>
       </main>
     </div>

@@ -1,25 +1,46 @@
 import { useApp } from '../context';
 import { ArrowLeft, Clock, CheckCircle2, Truck, Check } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { db } from '../lib/firebase';
+import { collection, onSnapshot, query, orderBy, updateDoc, doc } from 'firebase/firestore';
 
-const mockOrders = [
-  { id: 'ORD-001', customer: 'Alice Smith', items: '2x Margherita, 1x Coke', total: '€24.50', status: 'pending', time: '10 mins ago' },
-  { id: 'ORD-002', customer: 'Bob Johnson', items: '1x Caesar Salad', total: '€12.00', status: 'preparing', time: '25 mins ago' },
-  { id: 'ORD-003', customer: 'Charlie Brown', items: '3x Pepperoni, 2x Fanta', total: '€45.00', status: 'ready', time: '40 mins ago' },
-  { id: 'ORD-004', customer: 'Diana Prince', items: '1x Veggie Supreme', total: '€18.00', status: 'delivered', time: '2 hrs ago' },
-];
+interface OrderItem {
+  name: string;
+  quantity: number;
+}
+
+interface Order {
+  id: string;
+  customerName: string;
+  items: OrderItem[];
+  total: string;
+  status: 'pending' | 'preparing' | 'ready' | 'delivered';
+  createdAt: string;
+}
 
 type Tab = 'pending' | 'preparing' | 'ready' | 'delivered';
 
 export default function AdminOrdersScreen() {
   const { navigate } = useApp();
   const [activeTab, setActiveTab] = useState<Tab>('pending');
-  const [orders, setOrders] = useState(mockOrders);
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setOrders(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Order)));
+    });
+    return () => unsubscribe();
+  }, []);
 
   const filterOrders = (status: Tab) => orders.filter(o => o.status === status);
 
-  const updateStatus = (id: string, newStatus: Tab) => {
-    setOrders(orders.map(o => o.id === id ? { ...o, status: newStatus } : o));
+  const updateStatus = async (id: string, newStatus: Tab) => {
+    try {
+      await updateDoc(doc(db, 'orders', id), { status: newStatus });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const tabs: { id: Tab, label: string }[] = [
@@ -71,18 +92,21 @@ export default function AdminOrdersScreen() {
             <div key={order.id} className="bg-white p-5 rounded-2xl shadow-sm border border-outline-variant/20 flex flex-col gap-3">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-bold text-on-surface">{order.id}</h3>
-                  <p className="text-sm font-medium text-primary">{order.customer}</p>
+                  <h3 className="font-bold text-on-surface truncate w-32" title={order.id}>{order.id}</h3>
+                  <p className="text-sm font-medium text-primary">{order.customerName}</p>
                 </div>
                 <div className="flex flex-col items-end">
                   <span className="font-bold text-on-surface">{order.total}</span>
-                  <span className="text-xs text-on-surface-variant">{order.time}</span>
+                  <span className="text-xs text-on-surface-variant">{new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                 </div>
               </div>
               
-              <p className="text-sm text-on-surface-variant bg-surface-container-low p-3 rounded-xl border border-outline-variant/10">
-                {order.items}
-              </p>
+              <div className="text-sm text-on-surface-variant bg-surface-container-low p-3 rounded-xl border border-outline-variant/10">
+                {order.items?.map((item, idx) => (
+                  <div key={idx}>{item.quantity}x {item.name}</div>
+                ))}
+                {!order.items?.length && <span>No items</span>}
+              </div>
 
               {/* Action Buttons based on status */}
               <div className="flex gap-2 mt-2">
