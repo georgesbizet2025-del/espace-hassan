@@ -28,4 +28,4 @@ try {
 }
 
 export const auth = getAuth(app);
-export const db = getFirestore(app, "ai-studio-de2d2121-13c4-46cf-97b0-17553a6776ab");
+export const db = getFirestore(app);
