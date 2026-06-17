@@ -6,6 +6,15 @@ import { seedMockDataIfEmpty } from './lib/seeder';
 
 type Screen = 'home' | 'productDetail' | 'cart' | 'menu' | 'orderTracking' | 'profile' | 'addressSelection' | 'offers' | 'salads' | 'adminDashboard' | 'adminOrders' | 'adminMenu' | 'login';
 
+export interface Product {
+  id: string;
+  name: string;
+  price: string;
+  desc: string;
+  img: string;
+  category: string;
+}
+
 interface UserData {
   role: string;
   name: string;
@@ -21,6 +30,8 @@ interface AppContextType {
   userData: UserData | null;
   isSidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
+  selectedProduct: Product | null;
+  setSelectedProduct: (product: Product | null) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -31,6 +42,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     // Seed the database with high-quality mockup products if it is completely empty
@@ -70,7 +82,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       user, 
       userData,
       isSidebarOpen,
-      setSidebarOpen
+      setSidebarOpen,
+      selectedProduct,
+      setSelectedProduct
     }}>
       {children}
     </AppContext.Provider>

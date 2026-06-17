@@ -14,7 +14,7 @@ interface Product {
 }
 
 export default function MenuScreen() {
-  const { navigate, setSidebarOpen } = useApp();
+  const { navigate, setSidebarOpen, setSelectedProduct } = useApp();
   const [searchTerm, setSearchTerm] = useState('');
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -61,7 +61,7 @@ export default function MenuScreen() {
 
         <div className="mt-8 space-y-4">
           {filteredPizzas.map(pizza => (
-            <div key={pizza.id} onClick={() => navigate('productDetail')} className="flex items-center gap-4 bg-white p-3 rounded-2xl shadow-sm border border-outline-variant/20 active:scale-[0.98] transition-transform cursor-pointer">
+            <div key={pizza.id} onClick={() => { setSelectedProduct(pizza); navigate('productDetail'); }} className="flex items-center gap-4 bg-white p-3 rounded-2xl shadow-sm border border-outline-variant/20 active:scale-[0.98] transition-transform cursor-pointer">
                <div className="w-24 h-24 flex-shrink-0">
                  <img src={pizza.img || 'https://images.unsplash.com/photo-1604068549290-dea0e4a30536?q=80&w=200&auto=format&fit=crop'} className="w-full h-full object-cover rounded-xl bg-surface-container" />
                </div>

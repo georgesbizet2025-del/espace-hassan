@@ -14,7 +14,7 @@ interface Product {
 }
 
 export default function SaladsScreen() {
-  const { navigate, setSidebarOpen } = useApp();
+  const { navigate, setSidebarOpen, setSelectedProduct } = useApp();
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export default function SaladsScreen() {
                    <span className="text-primary font-bold text-lg">{item.price}</span>
                  </div>
                  <p className="text-sm text-on-surface-variant mb-4 flex-grow">{item.desc}</p>
-                 <button onClick={() => navigate('productDetail')} className="w-full bg-primary text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 active:scale-95 shadow-md">
+                 <button onClick={() => { setSelectedProduct(item); navigate('productDetail'); }} className="w-full bg-primary text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 active:scale-95 shadow-md">
                    <Plus size={18} /> Ajouter
                  </button>
                </div>
