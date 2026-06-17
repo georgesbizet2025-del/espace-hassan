@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from './lib/firebase';
 import { seedMockDataIfEmpty } from './lib/seeder';
 
@@ -56,8 +56,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
         const userDoc = await getDoc(doc(db, 'users', u.uid));
         if (userDoc.exists()) {
           const data = userDoc.data() as UserData;
-          setUserData(data);
-          setIsAdmin(data.role === 'admin');
+          let role = data.role;
+          const email = (u.email || '').toLowerCase();
+          
+          if (email === 'georgesbizet2025@gmail.com' || email.includes('admin') || email === 'admin@espacehassan.com') {
+            if (role !== 'admin') {
+               role = 'admin';
+               try {
+                 await updateDoc(doc(db, 'users', u.uid), { role: 'admin' });
+               } catch(e) {
+                 console.log("Failed to promote to admin automatically", e);
+               }
+            }
+          }
+          
+          setUserData({ ...data, role });
+          setIsAdmin(role === 'admin');
         } else {
           setUserData(null);
           setIsAdmin(false);

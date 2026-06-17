@@ -16,17 +16,24 @@ export default function OrderTrackingScreen() {
   useEffect(() => {
     if (!user) return;
     
+    // Query matching userId only (saves us from needing a composite index for createdAt ordering)
     const q = query(
       collection(db, 'orders'),
-      where('userId', '==', user.uid),
-      orderBy('createdAt', 'desc'),
-      limit(1)
+      where('userId', '==', user.uid)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       if (!snapshot.empty) {
-        const doc = snapshot.docs[0];
+        // Sort client-side by createdAt descending to get the most recent order first
+        const docs = [...snapshot.docs].sort((a, b) => {
+          const aTime = a.data().createdAt || '';
+          const bTime = b.data().createdAt || '';
+          return bTime.localeCompare(aTime); // descending
+        });
+        const doc = docs[0];
         setOrder({ id: doc.id, ...doc.data() } as Order);
+      } else {
+        setOrder(null);
       }
     });
     

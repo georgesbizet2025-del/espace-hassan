@@ -21,7 +21,18 @@ const app = initializeApp(firebaseConfig);
 export let analytics: any = null;
 try {
   if (typeof window !== 'undefined') {
-    analytics = getAnalytics(app);
+    const isIframe = window.self !== window.top;
+    const isDevPreview = window.location.hostname.includes('localhost') || 
+                         window.location.hostname.includes('127.0.0.1') || 
+                         window.location.hostname.includes('run.app') || 
+                         window.location.hostname.includes('google.com') ||
+                         window.location.hostname.includes('webcontainer');
+                         
+    if (!isIframe && !isDevPreview) {
+      analytics = getAnalytics(app);
+    } else {
+      console.log("Firebase Analytics skipped in sandboxed / preview iframe or development context.");
+    }
   }
 } catch (e) {
   console.warn("Analytics initialization skipped or failed inside secure sandbox:", e);
