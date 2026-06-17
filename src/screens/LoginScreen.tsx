@@ -23,7 +23,7 @@ export default function LoginScreen() {
         await setDoc(doc(db, 'users', user.uid), {
           name,
           email,
-          role: 'customer',
+          role: email.toLowerCase() === 'georgesbizet2025@gmail.com' || email.toLowerCase().includes('admin') ? 'admin' : 'customer',
           createdAt: new Date().toISOString()
         });
       } else {

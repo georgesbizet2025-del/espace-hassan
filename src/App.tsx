@@ -5,6 +5,7 @@
 
 import { AppProvider, useApp } from './context';
 import { BottomNav } from './components/BottomNav';
+import { Sidebar } from './components/Sidebar';
 import HomeScreen from './screens/HomeScreen';
 import ProductDetailScreen from './screens/ProductDetailScreen';
 import CartScreen from './screens/CartScreen';
@@ -24,6 +25,9 @@ function AppContent() {
 
   return (
     <div className="min-h-[100dvh] bg-background text-on-background relative w-full max-w-md mx-auto shadow-2xl overflow-x-hidden border-x border-outline-variant/20">
+      {/* Global Sidebar component controlled via context */}
+      <Sidebar />
+
       {currentScreen === 'home' && <HomeScreen />}
       {currentScreen === 'productDetail' && <ProductDetailScreen />}
       {currentScreen === 'cart' && <CartScreen />}
@@ -38,7 +42,7 @@ function AppContent() {
       {currentScreen === 'adminMenu' && <AdminMenuScreen />}
       {currentScreen === 'login' && <LoginScreen />}
 
-      {['home', 'menu', 'cart', 'profile', 'salads'].includes(currentScreen) && <BottomNav />}
+      {['home', 'menu', 'cart', 'profile', 'salads', 'offers', 'orderTracking'].includes(currentScreen) && <BottomNav />}
     </div>
   );
 }

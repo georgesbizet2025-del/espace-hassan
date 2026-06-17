@@ -1,4 +1,4 @@
-import { ArrowLeft, MapPin, Plus } from 'lucide-react';
+import { ArrowLeft, MapPin, Plus, Menu } from 'lucide-react';
 import { useApp } from '../context';
 import { useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
@@ -14,7 +14,7 @@ interface Product {
 }
 
 export default function SaladsScreen() {
-  const { navigate } = useApp();
+  const { navigate, setSidebarOpen } = useApp();
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -27,8 +27,16 @@ export default function SaladsScreen() {
 
   return (
     <div className="min-h-screen bg-surface pb-24">
-      <header className="bg-surface shadow-sm sticky top-0 flex items-center px-4 h-16 z-50">
-        <h1 className="text-2xl font-bold text-primary ml-2 flex-grow">Notre Carte</h1>
+      <header className="flex justify-between items-center px-4 h-16 w-full z-10 bg-surface shadow-xs sticky top-0 border-b border-outline-variant/10">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setSidebarOpen(true)}
+            className="w-10 h-10 rounded-full hover:bg-primary/10 flex items-center justify-center text-primary transition-all duration-200 active:scale-95"
+          >
+            <Menu size={24} />
+          </button>
+          <h1 className="text-xl font-extrabold text-primary tracking-tight">Notre Carte</h1>
+        </div>
       </header>
 
       <nav className="sticky top-16 bg-surface/90 backdrop-blur-md z-40 px-4 py-3 flex gap-4 overflow-x-auto custom-scrollbar border-b border-outline-variant/30">
