@@ -1,8 +1,9 @@
 import { useApp } from '../context';
 import { ArrowLeft, Plus, Edit2, Trash2, Search, X, Check, Loader2, AlertTriangle } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { db } from '../lib/firebase';
+import { db, storage } from '../lib/firebase';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 interface Product {
   id: string;
@@ -24,8 +25,63 @@ export default function AdminMenuScreen() {
   
   // Custom states for safety and UX
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    showToast("Traitement de l'image en cours⏳");
+
+    try {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          // Compress to JPEG to save space
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+          setFormData({ ...formData, img: dataUrl });
+          setIsUploading(false);
+          showToast('Image traitée avec succès! ✅');
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.onerror = () => {
+        setIsUploading(false);
+        showToast("Erreur de lecture de l'image.");
+      };
+      reader.readAsDataURL(file);
+    } catch (error: any) {
+      setIsUploading(false);
+      showToast('Erreur: ' + error.message);
+    }
+  };
 
   useEffect(() => {
     const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
@@ -183,8 +239,22 @@ export default function AdminMenuScreen() {
               <input type="text" placeholder="ex: Sauce tomate, Thon, Olives, Fromage" className="w-[100%] bg-surface p-3 rounded-xl border border-outline-variant/20 text-sm outline-none text-on-surface" value={formData.desc} onChange={e => setFormData({...formData, desc: e.target.value})} disabled={isSaving} />
             </div>
             <div>
-              <label className="text-[10px] font-bold text-outline uppercase tracking-wider block mb-1">URL de l'image (Optionnel)</label>
-              <input type="text" placeholder="https://images.unsplash.com/..." className="w-[100%] bg-surface p-3 rounded-xl border border-outline-variant/20 text-sm outline-none text-on-surface" value={formData.img} onChange={e => setFormData({...formData, img: e.target.value})} disabled={isSaving} />
+              <label className="text-[10px] font-bold text-outline uppercase tracking-wider block mb-1">Image du Produit</label>
+              <div className="flex gap-2 items-center">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleImageUpload} 
+                  disabled={isSaving || isUploading}
+                  className="w-[100%] bg-surface p-2 rounded-xl border border-outline-variant/20 text-sm outline-none text-on-surface file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                />
+                {(isSaving || isUploading) && <Loader2 size={24} className="animate-spin text-primary" />}
+              </div>
+              {formData.img && !formData.img.startsWith('blob:') && (
+                <div className="mt-2">
+                  <img src={formData.img} alt="Aperçu" className="w-20 h-20 object-cover rounded-xl border border-outline-variant/20" />
+                </div>
+              )}
             </div>
             
             <div className="flex gap-2 mt-4 pt-2">
