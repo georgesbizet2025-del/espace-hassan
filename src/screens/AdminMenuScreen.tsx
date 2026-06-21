@@ -147,7 +147,7 @@ export default function AdminMenuScreen() {
         <h1 className="text-xl font-black text-primary ml-4">Gérer la Carte</h1>
       </header>
 
-      <main className="px-4 mt-6 max-w-md mx-auto">
+      <main className="px-4 mt-6 max-w-md md:max-w-3xl lg:max-w-4xl mx-auto w-full">
         <div className="flex items-center bg-surface-container-low rounded-xl px-4 py-3 border border-outline-variant/30 mb-6 sticky top-20 z-10">
           <Search size={20} className="text-outline" />
           <input 

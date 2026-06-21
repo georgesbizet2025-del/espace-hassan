@@ -44,7 +44,7 @@ export default function CartScreen() {
         </button>
       </header>
 
-      <main className="max-w-lg mx-auto p-4 space-y-6">
+      <main className="w-full max-w-lg md:max-w-4xl mx-auto p-4 space-y-6">
         <section className="space-y-4">
           {cartItems.map(item => (
             <div key={item.id} className="flex items-center gap-4 bg-white p-3 rounded-xl shadow-sm border border-outline-variant/10">
@@ -104,8 +104,8 @@ export default function CartScreen() {
         </section>
       </main>
 
-      <div className="fixed bottom-20 w-full max-w-md left-1/2 -translate-x-1/2 z-50 p-4 bg-gradient-to-t from-background to-transparent pb-6">
-        <button onClick={handleCheckout} className="w-full bg-primary text-white py-4 rounded-2xl flex items-center justify-center gap-3 shadow-xl active:scale-[0.98] transition-all">
+      <div className="sticky bottom-0 w-full z-50 p-4 bg-background border-t border-outline-variant/20 mt-auto md:mb-0 mb-16 pb-8 md:pb-4">
+        <button onClick={handleCheckout} className="w-full md:max-w-md md:mx-auto bg-primary text-white py-4 rounded-2xl flex items-center justify-center gap-3 shadow-xl active:scale-[0.98] transition-all">
           <span className="text-base font-bold">Passer la commande</span>
           <ShoppingBag size={20} />
         </button>

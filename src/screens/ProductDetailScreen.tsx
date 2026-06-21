@@ -69,7 +69,7 @@ export default function ProductDetailScreen() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
       </div>
 
-      <div className="relative -mt-10 px-4 pb-32">
+      <div className="relative -mt-10 px-4 pb-12 w-full max-w-lg md:max-w-4xl mx-auto">
         <div className="bg-surface-container-lowest rounded-t-[32px] p-6 shadow-xl relative z-10 border border-outline-variant/10">
           <div className="flex justify-between items-start mb-4">
             <div>
@@ -141,10 +141,10 @@ export default function ProductDetailScreen() {
         </div>
       </div>
 
-      <footer className="fixed bottom-0 w-full max-w-md left-1/2 -translate-x-1/2 z-50 bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.06)] px-6 py-4 rounded-t-3xl border-t border-outline-variant/30">
+      <footer className="sticky bottom-0 w-full z-50 bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.06)] px-6 py-4 rounded-none md:border-x border-t border-outline-variant/30 mt-auto">
         <button 
           onClick={() => navigate('cart')} 
-          className="w-full bg-primary text-white h-14 rounded-2xl flex items-center justify-center gap-2 font-black text-base active:scale-95 transition-transform shadow-md hover:bg-primary-container"
+          className="w-full md:max-w-md md:mx-auto bg-primary text-white h-14 rounded-2xl flex items-center justify-center gap-2 font-black text-base active:scale-95 transition-transform shadow-md hover:bg-primary-container"
         >
           Ajouter au Panier • {(parseFloat(product.price) * qty).toFixed(0)} DH
         </button>

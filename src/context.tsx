@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from './lib/firebase';
 import { seedMockDataIfEmpty } from './lib/seeder';
 
@@ -55,7 +55,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (u) {
         const userDoc = await getDoc(doc(db, 'users', u.uid));
         if (userDoc.exists()) {
-          const data = userDoc.data() as UserData;
+          let data = userDoc.data() as UserData;
           let role = data.role;
           const email = (u.email || '').toLowerCase();
           
@@ -73,8 +73,26 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setUserData({ ...data, role });
           setIsAdmin(role === 'admin');
         } else {
-          setUserData(null);
-          setIsAdmin(false);
+          // If no user document exists, create it
+          const email = (u.email || '').toLowerCase();
+          const role = email === 'georgesbizet2025@gmail.com' || email.includes('admin') || email === 'admin@espacehassan.com' ? 'admin' : 'customer';
+          
+          const newData = {
+            name: u.displayName || email.split('@')[0],
+            email: email,
+            role: role,
+            createdAt: new Date().toISOString()
+          };
+          
+          try {
+            await setDoc(doc(db, 'users', u.uid), newData);
+            setUserData(newData);
+            setIsAdmin(role === 'admin');
+          } catch(e) {
+            console.error("Failed to create user doc", e);
+            setUserData(null);
+            setIsAdmin(false);
+          }
         }
       } else {
         setUserData(null);

@@ -34,7 +34,7 @@ export default function MenuScreen() {
         <div className="flex items-center gap-3">
           <button 
             onClick={() => setSidebarOpen(true)}
-            className="w-10 h-10 rounded-full hover:bg-primary/10 flex items-center justify-center text-primary transition-all duration-200 active:scale-95"
+            className="w-10 h-10 rounded-full hover:bg-primary/10 flex items-center justify-center text-primary transition-all duration-200 active:scale-95 md:hidden"
           >
             <Menu size={24} />
           </button>
@@ -47,7 +47,7 @@ export default function MenuScreen() {
         <button onClick={() => navigate('salads')} className="px-5 py-2 whitespace-nowrap rounded-full text-sm font-semibold bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors">Nos Salades</button>
       </nav>
 
-      <main className="px-4 mt-6 max-w-lg mx-auto">
+      <main className="px-4 mt-6 max-w-lg md:max-w-4xl lg:max-w-6xl mx-auto w-full">
         <div className="mt-4 flex items-center bg-surface-container-low rounded-xl px-4 py-3 border border-outline-variant/30">
           <Search size={20} className="text-outline" />
           <input 

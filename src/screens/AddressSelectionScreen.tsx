@@ -13,7 +13,7 @@ export default function AddressSelectionScreen() {
         <h1 className="font-bold text-xl ml-4 text-primary">Choisir l'adresse</h1>
       </header>
 
-      <main className="flex-grow pt-0 max-w-md mx-auto w-full">
+      <main className="flex-grow pt-0 max-w-md md:max-w-3xl lg:max-w-4xl mx-auto w-full">
         <section className="px-4 py-4 sticky top-16 z-40 bg-background/95 backdrop-blur-md">
           <div className="relative">
             <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" />

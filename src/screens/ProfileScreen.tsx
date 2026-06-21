@@ -21,7 +21,7 @@ export default function ProfileScreen() {
         <h1 className="text-xl font-bold text-primary">Mon Profil</h1>
       </header>
 
-      <main className="pt-6 pb-32 px-4 max-w-md mx-auto">
+      <main className="pt-6 pb-32 px-4 max-w-md md:max-w-3xl lg:max-w-4xl mx-auto w-full">
         {!user ? (
           <div className="flex flex-col items-center justify-center pt-20">
             <Shield size={64} className="text-outline mb-6 opacity-50" />

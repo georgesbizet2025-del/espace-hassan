@@ -81,7 +81,7 @@ export default function AdminOrdersScreen() {
         </div>
       </header>
 
-      <main className="px-4 mt-6 max-w-md mx-auto space-y-4">
+      <main className="px-4 mt-6 max-w-md md:max-w-3xl lg:max-w-4xl mx-auto w-full space-y-4">
         {filterOrders(activeTab).length === 0 ? (
           <div className="text-center py-10">
             <Clock size={48} className="text-outline mx-auto mb-4 opacity-50" />

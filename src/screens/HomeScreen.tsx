@@ -5,13 +5,13 @@ export default function HomeScreen() {
   const { navigate, setSidebarOpen } = useApp();
 
   return (
-    <div className="w-full flex flex-col pb-24 bg-surface min-h-screen">
+    <div className="w-full max-w-md md:max-w-4xl lg:max-w-6xl mx-auto flex flex-col pb-24 bg-surface min-h-screen">
       {/* Top App Bar */}
       <header className="flex justify-between items-center px-4 h-16 w-full z-40 sticky top-0 bg-surface/90 backdrop-blur-md border-b border-outline-variant/10 shadow-xs">
         <div className="flex items-center gap-3">
           <button 
             onClick={() => setSidebarOpen(true)}
-            className="w-10 h-10 rounded-full hover:bg-primary/10 flex items-center justify-center text-primary transition-all duration-200 active:scale-95"
+            className="w-10 h-10 rounded-full hover:bg-primary/10 flex items-center justify-center text-primary transition-all duration-200 active:scale-95 md:hidden"
             aria-label="Open Sidebar"
           >
             <Menu size={24} />

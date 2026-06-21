@@ -13,7 +13,7 @@ export default function OffersScreen() {
         <h1 className="text-xl font-bold ml-2 text-primary">Offers & Rewards</h1>
       </header>
 
-      <main className="max-w-2xl mx-auto">
+      <main className="max-w-2xl md:max-w-4xl lg:max-w-5xl mx-auto w-full">
         <section className="px-4 py-6">
           <div className="rounded-3xl bg-primary-container p-8 shadow-lg text-white">
             <div className="flex justify-between items-start mb-6">

@@ -31,7 +31,7 @@ export default function SaladsScreen() {
         <div className="flex items-center gap-3">
           <button 
             onClick={() => setSidebarOpen(true)}
-            className="w-10 h-10 rounded-full hover:bg-primary/10 flex items-center justify-center text-primary transition-all duration-200 active:scale-95"
+            className="w-10 h-10 rounded-full hover:bg-primary/10 flex items-center justify-center text-primary transition-all duration-200 active:scale-95 md:hidden"
           >
             <Menu size={24} />
           </button>
@@ -44,7 +44,7 @@ export default function SaladsScreen() {
         <button className="px-5 py-2 whitespace-nowrap rounded-full text-sm font-semibold bg-primary text-white shadow-md">Nos Salades</button>
       </nav>
 
-      <main className="p-4 max-w-lg mx-auto">
+      <main className="p-4 max-w-lg md:max-w-4xl lg:max-w-6xl mx-auto w-full">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-primary">Salades Gourmandes</h2>
           <p className="text-sm text-on-surface-variant">Fraîcheur et authenticité dans chaque assiette.</p>

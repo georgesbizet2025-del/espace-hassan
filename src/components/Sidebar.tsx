@@ -6,8 +6,6 @@ import { signOut } from 'firebase/auth';
 export function Sidebar() {
   const { isSidebarOpen, setSidebarOpen, navigate, user, userData, isAdmin, currentScreen } = useApp();
 
-  if (!isSidebarOpen) return null;
-
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -29,15 +27,21 @@ export function Sidebar() {
   ];
 
   return (
-    <div className="fixed inset-0 z-100 flex justify-start pointer-events-auto">
-      {/* Dark Overlay with smooth transition on exit */}
-      <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300"
-        onClick={() => setSidebarOpen(false)}
-      />
+    <>
+      {/* Mobile Dark Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300 z-40 md:hidden pointer-events-auto"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-      {/* Main Drawer Container */}
-      <div className="relative w-72 max-w-sm h-full bg-surface-container-lowest flex flex-col shadow-2xl z-10 border-r border-outline-variant/30 animate-[slide-in_0.25s_ease-out]">
+      {/* Main Sidebar/Drawer Container */}
+      <div className={`
+        fixed inset-y-0 left-0 z-50 w-72 bg-surface-container-lowest flex flex-col shadow-2xl border-r border-outline-variant/30 transition-transform duration-300
+        md:static md:translate-x-0 md:shadow-none pointer-events-auto shrink-0
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
         {/* Style tag to inject the slide-in animation directly and cleanly */}
         <style dangerouslySetInnerHTML={{__html: `
           @keyframes slide-in {
@@ -168,6 +172,6 @@ export function Sidebar() {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 }

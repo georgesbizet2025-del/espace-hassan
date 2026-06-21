@@ -86,7 +86,7 @@ export default function OrderTrackingScreen() {
         <div className="w-8"></div>
       </header>
 
-      <main className="max-w-md mx-auto px-4 pt-6 space-y-6">
+      <main className="max-w-md md:max-w-3xl lg:max-w-4xl mx-auto w-full px-4 pt-6 space-y-6">
         {order ? (
           <>
             <section className="text-center py-4">
